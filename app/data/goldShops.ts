@@ -37,5 +37,8 @@ export const GOLD_SHOPS: GoldShop[] = [
   },
 ];
 
-// Today's date formatted as dd/mm/yyyy
-export const TODAY = "28/03/2026";
+export const TODAY = new Date().toLocaleDateString("vi-VN", {
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
+});
