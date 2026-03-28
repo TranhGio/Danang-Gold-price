@@ -28,6 +28,13 @@ export const GOLD_SHOPS: GoldShop[] = [
     image: "images/kim-khanh-viet-hung.jpg",
     updatedAt: "10:00",
   },
+  {
+    id: "tru-cam-le",
+    name: "Trữ Cẩm Lệ",
+    location: "Đà Nẵng",
+    image: "images/tru-cam-le.jpg",
+    updatedAt: "10:00",
+  },
 ];
 
 // Today's date formatted as dd/mm/yyyy
