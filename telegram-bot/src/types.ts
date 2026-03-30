@@ -1,7 +1,7 @@
 export interface Env {
   TELEGRAM_BOT_TOKEN: string;
   GITHUB_TOKEN: string;
-  ALLOWED_CHAT_ID: string;
+  ALLOWED_CHAT_IDS: string; // comma-separated, e.g. "123456,789012"
   WEBHOOK_SECRET: string;
   GITHUB_REPO: string;
   GITHUB_BRANCH: string;

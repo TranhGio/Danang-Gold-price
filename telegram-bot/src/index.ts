@@ -18,7 +18,9 @@ export default {
     const update = (await request.json()) as TelegramUpdate;
     const chatId = update.message?.chat?.id ?? update.callback_query?.message?.chat?.id;
 
-    if (!chatId || String(chatId) !== env.ALLOWED_CHAT_ID) {
+    // ALLOWED_CHAT_IDS supports comma-separated IDs, e.g. "123456,789012"
+    const allowedIds = env.ALLOWED_CHAT_IDS.split(",").map((id) => id.trim());
+    if (!chatId || !allowedIds.includes(String(chatId))) {
       return new Response("OK");
     }
 
