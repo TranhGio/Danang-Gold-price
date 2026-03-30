@@ -1,7 +1,7 @@
 import { Env, TelegramUpdate } from "./types";
 import { SHOPS, getShopById } from "./shops";
 import { sendMessage, answerCallbackQuery, getFile, downloadFile, buildShopKeyboard } from "./telegram";
-import { updateShopImage, updateShopTimestamp } from "./github";
+import { updateShopImageAndTimestamp, updatePopupRedirectUrl } from "./github";
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
@@ -31,6 +31,13 @@ export default {
         return new Response("OK");
       }
 
+      // Handle /url command
+      if (update.message?.text?.startsWith("/url")) {
+        await env.BOT_STATE.put(`user:${chatId}`, "waiting_url", { expirationTtl: 300 });
+        await sendMessage(env.TELEGRAM_BOT_TOKEN, chatId, "Gửi link redirect mới:");
+        return new Response("OK");
+      }
+
       // Handle /cancel command
       if (update.message?.text?.startsWith("/cancel")) {
         await env.BOT_STATE.delete(`user:${chatId}`);
@@ -50,6 +57,26 @@ export default {
 
         const shop = getShopById(shopId)!;
         await sendMessage(env.TELEGRAM_BOT_TOKEN, chatId, `Gửi ảnh giá vàng ${shop.name}:`);
+        return new Response("OK");
+      }
+
+      // Handle URL text input
+      const state = await env.BOT_STATE.get(`user:${chatId}`);
+      if (state === "waiting_url" && update.message?.text) {
+        const newUrl = update.message.text.trim();
+        if (!newUrl.startsWith("http")) {
+          await sendMessage(env.TELEGRAM_BOT_TOKEN, chatId, "Link không hợp lệ. Vui lòng gửi link bắt đầu bằng http:");
+          return new Response("OK");
+        }
+
+        await sendMessage(env.TELEGRAM_BOT_TOKEN, chatId, "Đang cập nhật redirect URL...");
+        await updatePopupRedirectUrl(env.GITHUB_TOKEN, env.GITHUB_REPO, env.GITHUB_BRANCH, newUrl);
+        await env.BOT_STATE.delete(`user:${chatId}`);
+        await sendMessage(
+          env.TELEGRAM_BOT_TOKEN,
+          chatId,
+          `Đã cập nhật redirect URL thành ${newUrl}. Trang web sẽ tự động deploy trong ~2 phút.`
+        );
         return new Response("OK");
       }
 
@@ -73,12 +100,12 @@ export default {
         const filePath = await getFile(env.TELEGRAM_BOT_TOKEN, fileId);
         const imageData = await downloadFile(env.TELEGRAM_BOT_TOKEN, filePath);
 
-        // Commit image to GitHub
-        await updateShopImage(env.GITHUB_TOKEN, env.GITHUB_REPO, env.GITHUB_BRANCH, shop.filename, imageData);
-
-        // Update timestamp in goldShops.ts
+        // Commit image + timestamp in a single commit
         const vnTime = getVietnamTime();
-        await updateShopTimestamp(env.GITHUB_TOKEN, env.GITHUB_REPO, env.GITHUB_BRANCH, shop.id, vnTime);
+        await updateShopImageAndTimestamp(
+          env.GITHUB_TOKEN, env.GITHUB_REPO, env.GITHUB_BRANCH,
+          shop.id, shop.filename, imageData, vnTime
+        );
 
         // Clear state
         await env.BOT_STATE.delete(`user:${chatId}`);
