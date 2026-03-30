@@ -8,4 +8,4 @@ GITHUB_BRANCH = "master"
 
 [[kv_namespaces]]
 binding = "BOT_STATE"
-id = "REPLACE_WITH_KV_NAMESPACE_ID"
+id = "e44aa30a6db14b6f9c61ad07b5d5e1d1"
