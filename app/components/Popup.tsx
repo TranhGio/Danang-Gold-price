@@ -10,7 +10,7 @@ export default function Popup() {
 
   const closeDialog = () => {
     setIsOpen(false);
-    window.open(POPUP_CONFIG.redirectUrl, "_blank");
+    window.location.href = POPUP_CONFIG.redirectUrl;
   };
 
   return (
