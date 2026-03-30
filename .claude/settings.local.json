@@ -3,7 +3,8 @@
     "allow": [
       "Bash(npx next:*)",
       "Bash(dig:*)",
-      "Bash(whois giavangdanang.com)"
+      "Bash(whois giavangdanang.com)",
+      "Bash(git:*)"
     ]
   }
 }
