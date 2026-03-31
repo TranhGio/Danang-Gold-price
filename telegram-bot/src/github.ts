@@ -49,7 +49,8 @@ export async function updateShopImageAndTimestamp(
   const fileRes = await githubApi(token, `/repos/${repo}/contents/app/data/goldShops.ts?ref=${branch}`);
   const fileContent = atob((fileRes.content as string).replace(/\n/g, ""));
 
-  const regex = new RegExp(`(id:\\s*"${shopId}"[\\s\\S]*?updatedAt:\\s*")([^"]*)("`);
+  const escapedShopId = shopId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const regex = new RegExp(`(id:\\s*"${escapedShopId}"[\\s\\S]*?updatedAt:\\s*")([^"]*)(")`);
   const updatedContent = fileContent.replace(regex, `$1${time}$3`);
   if (updatedContent === fileContent) {
     throw new Error(`Could not find shop "${shopId}" in goldShops.ts`);
