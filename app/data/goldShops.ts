@@ -19,7 +19,7 @@ export const GOLD_SHOPS: GoldShop[] = [
     name: "Ngọc Thịnh",
     location: "Đà Nẵng",
     image: "images/ngoc-thinh.jpg",
-    updatedAt: "09:07",
+    updatedAt: "13:49",
   },
   {
     id: "kim-khanh-viet-hung",
