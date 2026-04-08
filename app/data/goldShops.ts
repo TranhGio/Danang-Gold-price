@@ -33,7 +33,7 @@ export const GOLD_SHOPS: GoldShop[] = [
     name: "Trữ Cẩm Lệ",
     location: "Đà Nẵng",
     image: "images/tru-cam-le.jpg",
-    updatedAt: "08:03",
+    updatedAt: "13:36",
   },
 ];
 
